@@ -1,0 +1,12 @@
+# Ignorar ambiente virtual
+.venv/
+
+# Cache do Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Outros
+.DS_Store
+.env
