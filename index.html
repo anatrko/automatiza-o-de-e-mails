@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classificador de Emails</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Classificador de Emails</h1>
+
+        <form id="emailForm">
+            <textarea id="emailTexto" placeholder="Digite o conteúdo do email aqui..." rows="6"></textarea>
+            
+            <label for="emailFile" style="display: block; margin: 10px 0;">Ou envie um arquivo (.txt, .pdf):</label>
+            <input type="file" id="emailFile" accept=".txt,.pdf">
+            
+            <button type="submit" id="btnEnviar">Classificar Email</button>
+        </form>
+
+        <div id="loading" class="hidden">Processando...</div>
+
+        <div id="resultado" class="hidden">
+            <h2>Categoria:</h2>
+            <p id="categoria"></p>
+            <h2>Resposta sugerida:</h2>
+            <p id="resposta"></p>
+        </div>
+    </div>
+
+    
+</body>
+</html>
