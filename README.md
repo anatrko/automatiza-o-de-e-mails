@@ -37,50 +37,55 @@ Use o comando `git clone` para baixar os arquivos do projeto:
 
 ```bash
 git clone <URL_DO_SEU_REPOSITORIO_GIT>
-cd <NOME_DA_PASTA_DO_PROJETO>
+cd <NOME_DA_PASTA_DO_PROJETO>  '''
+
 Se você já tem o projeto e quer apenas atualizá-lo, use:
 
-bash
+'''bash
 Copiar código
 git pull origin main
 2. Crie e Ative o Ambiente Virtual
-Isso isola as dependências do projeto.
+Isso isola as dependências do projeto.'''
 
 Crie o ambiente:
 
-bash
+'''bash
 Copiar código
-python3 -m venv .venv
+python3 -m venv .venv'''
+
 Ative o ambiente:
 
-bash
+'''bash
 Copiar código
 # No Windows:
 .venv\Scripts\activate
 
 # No macOS/Linux:
-source .venv/bin/activate
+source .venv/bin/activate'''
+
 3. Instale as Dependências
 Com o ambiente virtual ativado, instale as bibliotecas:
 
-bash
+'''bash
 Copiar código
-pip install -r requirements.txt
+pip install -r requirements.txt'''
+
 4. Configure a Chave de API
 Crie um arquivo chamado .env na raiz do projeto e adicione sua chave da API do Gemini:
 
-env
+'''env
 Copiar código
-GEMINI_API_KEY=SUA_CHAVE_SECRETA_VAI_AQUI
+GEMINI_API_KEY=SUA_CHAVE_SECRETA_VAI_AQUI'''
+
 5. Execute a Aplicação
 Você precisará de dois terminais abertos na pasta do projeto.
 
 a) Inicie o Backend
 No primeiro terminal (com o .venv ativado), rode o servidor da API:
 
-bash
+'''bash
 Copiar código
-uvicorn api:app --reload
+uvicorn api:app --reload '''
 O backend estará disponível em:
  http://127.0.0.1:8000
 
