@@ -1,7 +1,7 @@
 # Leitor de E-mails com IA
 
 Aplicação web que utiliza a API do Google Gemini para classificar o conteúdo de e-mails em "Produtivo" ou "Improdutivo" e sugerir uma resposta automática. A interface permite a análise de texto colado ou o upload de arquivos `.txt`.
-Obs: Projeto feito em ambiente Linux - WSL
+
 ---
 
 ### Tecnologias Utilizadas
@@ -31,27 +31,30 @@ Siga os passos abaixo para configurar e executar a aplicação em sua máquina l
 
 **1. Clone o Repositório**
 
-Use o comando `git clone` para baixar os arquivos do projeto. Se você já tem o projeto e quer apenas atualizá-lo, use `git pull`.
+Use o comando `git clone` para baixar os arquivos do projeto.
 
 ```bash
-# Para baixar pela primeira vez
 git clone <URL_DO_SEU_REPOSITORIO_GIT>
 cd <NOME_DA_PASTA_DO_PROJETO>
-
-# Para atualizar um projeto existente
-git pull origin main
-2. Crie e Ative o Ambiente Virtual
-
-Isso isola as dependências do projeto.
+Se você já tem o projeto e quer apenas atualizá-lo, use git pull.
 
 Bash
 
-# Criar o ambiente
-python3 -m venv .venv
+git pull origin main
+2. Crie e Ative o Ambiente Virtual
 
-# Ativar o ambiente
+Isso isola as dependências do projeto. Primeiro, crie o ambiente:
+
+Bash
+
+python3 -m venv .venv
+Depois, ative o ambiente:
+
+Bash
+
 # No Windows:
 .venv\Scripts\activate
+
 # No macOS/Linux:
 source .venv/bin/activate
 3. Instale as Dependências
@@ -85,4 +88,4 @@ Clique com o botão direito no arquivo index.html.
 
 Selecione "Open with Live Server".
 
-O frontend abrirá no seu navegador, geralmente em http://127.0.0.1:5500.
+O frontend abrirá no seu navegador, geralmente em http://127.0.0.1:5500
