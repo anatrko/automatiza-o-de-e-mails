@@ -1,4 +1,4 @@
-# Decifrador de E-mails com IA 🤖
+# Leitor de E-mails com IA
 
 Aplicação web que utiliza a API do Google Gemini para classificar o conteúdo de e-mails em "Produtivo" ou "Improdutivo" e sugerir uma resposta automática. A interface permite a análise de texto colado ou o upload de arquivos `.txt`.
 
@@ -55,9 +55,10 @@ Para Windows:
 ```Bash
 
 .venv\Scripts\activate
+```
 Para macOS ou Linux:
 
-Bash
+```Bash
 
 source .venv/bin/activate
 ```
