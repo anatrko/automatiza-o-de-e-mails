@@ -3,35 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Classificador de Emails</title>
+    <title>Leitor de E-mails </title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <script src="script.js"></script>
+
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body>
+    
+    <div class="container" x-data="emailAnalyzer()" x-init="$watch('result', value => typeWriterEffect(value?.suggestion))">
+        <h1>Leitor de E-mails </h1>
+        <p class="subtitle">use a IA para separar seus E-mail</p>
 
-    <div class="container">
-        <h1>Classificador de Emails</h1>
+        <div class="example-buttons">
+            <button type="button" class="utility-button" @click="loadExample('produtivo')">Carregar Exemplo Produtivo</button>
+            <button type="button" class="utility-button" @click="loadExample('improdutivo')">Carregar Exemplo Improdutivo</button>
+        </div>
 
-        <form id="emailForm">
-            <textarea id="emailTexto" placeholder="Digite o conteúdo do email aqui..." rows="6"></textarea>
+        <form @submit.prevent="submitForm">
+            <textarea x-model="emailText" placeholder="Digite texto do e-mail aqui..."></textarea>
             
-            <label for="emailFile" style="display: block; margin: 10px 0;">Ou envie um arquivo (.txt, .pdf):</label>
-            <input type="file" id="emailFile" accept=".txt,.pdf">
-            
-            <button type="submit" id="btnEnviar">Classificar Email</button>
+            <div class="file-input-area">
+                <label for="fileInput" class="file-label">Ou se preferir, mande um arquivo .txt</label>
+                <input type="file" id="fileInput" accept=".txt" @change="fileName = $event.target.files.length > 0 ? $event.target.files[0].name : 'Nenhum arquivo selecionado'">
+                <span class="file-name" x-text="fileName"></span>
+            </div>
+
+            <button type="submit" :disabled="isLoading">
+                <span x-show="!isLoading">Analisar E-mail</span>
+                <span x-show="isLoading">Analisando...</span>
+            </button>
         </form>
 
-        <div id="loading" class="hidden">Processando...</div>
+        <div class="divider" x-show="isLoading || result || error"></div>
 
-        <div id="resultado" class="hidden">
-            <h2>Categoria:</h2>
-            <p id="categoria"></p>
-            <h2>Resposta sugerida:</h2>
-            <p id="resposta"></p>
-        </div>
+        <div x-show="isLoading" class="loader"></div>
+        <template x-if="error"><div class="error" x-text="error"></div></template>
+
+        <template x-if="result">
+            <div class="result-box">
+                <div class="result-header">
+                    <h2>Veredito da IA:</h2>
+                    <button type="button" class="utility-button" @click="clearForm">Limpar</button>
+                </div>
+                <span 
+                    class="classification-badge" 
+                    :class="{ 'produtivo': result.classification === 'Produtivo', 'improdutivo': result.classification === 'Improdutivo' }"
+                    x-text="result.classification">
+                </span>
+
+                <div class="result-header">
+                    <h2>
+                        <svg class="ai-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4H8"></path><rect x="4" y="12" width="16" height="8"></rect><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="M12 12v-2"></path><path d="M12 20v-2"></path></svg>
+                        Sugestão de Resposta:
+                    </h2>
+                    <button type="button" class="utility-button" @click="copySuggestion" x-text="copyButtonText"></button>
+                </div>
+                <p id="suggestion-text" class="suggestion"></p>
+            </div>
+        </template>
     </div>
 
-    
+    <script src="script.js"></script>
 </body>
 </html>

@@ -1,89 +1,298 @@
+/* ==============================
+    🎨 VARIÁVEIS DE TEMA
+============================== */
+:root {
+    --background: #21222b;
+    --surface: #2c2c3b;
+    --text-primary: #f0f0f0;
+    --text-secondary: #a09cb0;
+    --accent: #596fb6;
+    --accent-gradient: #444ead;
+    --error: #e74c3c;
+    --success: #2ecc71;
+    --warning: #f1c40f;
+}
+
+/* ==============================
+    🎬 ANIMAÇÕES
+============================== */
+@keyframes space-pan {
+    0% {
+        background-position: 0% 50%; /* Começa na esquerda */
+    }
+    100% {
+        background-position: 100% 50%; /* Termina na direita */
+    }
+}
+
+@keyframes fade-in-up {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ==============================
+    🌌 LAYOUT BASE
+============================== */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f5f5f5;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
+    font-family: 'Inter', sans-serif;
+    color: var(--text-primary);
     margin: 0;
+    padding: 2rem;
+    display: grid;
+    place-items: center;
+    min-height: 100vh;
+
+    background-image: linear-gradient(
+        rgba(35, 33, 43, 0.4),
+        rgba(35, 33, 43, 0.4)
+    ), url('https://t4.ftcdn.net/jpg/03/27/18/89/360_F_327188981_HimC83xWer8XCFI2lGTUwORkdp4Nerrl.jpg');
+
+    /* --- MUDANÇA AQUI: Usando 'cover' para garantir que a tela seja 100% coberta --- */
+    background-size: cover; 
+    background-position: center center;
+    background-attachment: fixed;
+    animation: space-pan 90s infinite alternate ease-in-out;
 }
 
 .container {
-    background-color: #fff;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     width: 100%;
-    max-width: 500px;
+    max-width: 600px;
+    padding: 2rem;
+    border-radius: 16px;
+
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background-color: rgba(47, 44, 59, 0.85);
+
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    animation: fade-in-up 0.8s ease-out;
 }
 
+/* ==============================
+    ✨ TIPOGRAFIA
+============================== */
 h1 {
     text-align: center;
-    margin-bottom: 20px;
+    font-size: 1.8rem;
+    margin-top: 0;
+
+    background: linear-gradient(45deg, var(--accent), #d5a6e8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
+.subtitle {
+    text-align: center;
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+}
+
+/* ==============================
+    🛠 BOTÕES DE UTILIDADE
+============================== */
+.example-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+
+.utility-button {
+    background: transparent;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.utility-button:hover {
+    background-color: var(--accent);
+    color: white;
+}
+
+/* ==============================
+    📝 TEXTAREA
+============================== */
 textarea {
     width: 100%;
-    padding: 10px;
+    min-height: 140px;
+    padding: 1rem;
+    background-color: rgba(26, 26, 26, 0.7);
+    border: 1px solid #555;
     border-radius: 8px;
-    border: 1px solid #ccc;
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 1rem;
     resize: vertical;
-    margin-bottom: 10px;
-    font-size: 14px;
+    margin-bottom: 1rem;
+    box-sizing: border-box;
 }
 
-button {
-    width: 100%;
-    padding: 10px;
-    border-radius: 8px;
-    border: none;
-    background-color: #007BFF;
-    color: white;
-    font-size: 16px;
-    cursor: pointer;
-    margin-bottom: 10px;
+textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 10px rgba(155, 89, 182, 0.3);
 }
 
-button:hover {
-    background-color: #0056b3;
+/* ==============================
+    📂 INPUT DE ARQUIVO
+============================== */
+.file-input-area {
+    margin-bottom: 1.5rem;
 }
 
-#loading {
-    text-align: center;
-    color: #555;
-    margin-bottom: 10px;
+.file-label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    display: block;
+    margin-bottom: 8px;
 }
 
-.hidden {
+input[type="file"] {
     display: none;
 }
 
-#resultado h2 {
-    margin-bottom: 5px;
+.file-label::before {
+    content: 'Escolher arquivo';
+    display: inline-block;
+    background-color: rgba(47, 44, 59, 0.8);
+    border: 1px solid var(--text-secondary);
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-right: 10px;
 }
 
-#resultado p {
-    margin-bottom: 15px;
+.file-name {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-style: italic;
 }
 
-
-/* Adicione estes estilos no final do seu style.css */
-.produtivo-text {
-    color: #28a745; /* Verde para produtivo */
-    font-weight: bold;
-}
-
-.improdutivo-text {
-    color: #dc3545; /* Vermelho para improdutivo */
-    font-weight: bold;
-}
-
-/* Estilo para o campo de arquivo, para ficar mais parecido com um botão/entrada */
-#emailFile {
+/* ==============================
+    🚀 BOTÃO SUBMIT
+============================== */
+button[type="submit"] {
     width: 100%;
-    padding: 10px 0;
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
+    padding: 1rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: white;
+    background: linear-gradient(45deg, var(--accent), var(--accent-gradient));
+    border: none;
     border-radius: 8px;
-    box-sizing: border-box;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+button[type="submit"]:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(155, 89, 182, 0.2);
+}
+
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ==============================
+    🔹 ELEMENTOS EXTRAS
+============================== */
+.divider {
+    height: 1px;
+    background-color: #4a4658;
+    margin: 2.5rem 0;
+}
+
+.loader {
+    width: 30px;
+    height: 30px;
+    border: 3px solid #555;
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 1.5rem auto;
+}
+
+.error {
+    background-color: rgba(231, 76, 60, 0.1);
+    border: 1px solid var(--error);
+    color: var(--error);
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+    backdrop-filter: blur(5px);
+}
+
+/* ==============================
+    📊 RESULTADOS
+============================== */
+.result-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.result-header h2 {
+    color: var(--text-secondary);
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.classification-badge {
+    display: inline-block;
+    padding: 0.4rem 0.8rem;
+    border-radius: 99px;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: #111;
+}
+
+.classification-badge.produtivo {
+    background-color: var(--success);
+}
+
+.classification-badge.improdutivo {
+    background-color: var(--warning);
+}
+
+/* ==============================
+    💡 SUGESTÕES
+============================== */
+.suggestion {
+    background-color: rgba(26, 26, 26, 0.7);
+    padding: 1rem;
+    border-left: 3px solid var(--accent);
+    border-radius: 8px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+/* ==============================
+    🛑 OCULTOS
+============================== */
+.ai-icon {
+    display: none; /* Ícone removido visualmente */
 }
