@@ -14,13 +14,10 @@ from fastapi.staticfiles import StaticFiles
 # --- Inicialização do app ---
 app = FastAPI(title="Análise de E-mail com Gemini API")
 
-# Monta arquivos estáticos em /static (evita conflito com rotas da API)
-app.mount("/static", StaticFiles(directory=".", html=True), name="static")
-
-# Configuração de CORS (somente o domínio do Vercel)
+# <<< MUDANÇA AQUI: Trocando para uma configuração de CORS mais permissiva para produção >>>
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://automatiza-o-de-e-mails.vercel.app"],
+    allow_origins=["*"],  # O "*" permite que qualquer site (incluindo o seu na Vercel) aceda à API
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -36,6 +33,7 @@ genai.configure(api_key=gemini_key)
 GEMINI_MODEL = "gemini-pro-latest"
 
 # --- Configuração do NLTK ---
+# ... (o resto do seu código continua exatamente igual) ...
 def setup_nltk():
     nltk_data_dir = "/app/nltk_data"
     os.makedirs(nltk_data_dir, exist_ok=True)
@@ -61,7 +59,6 @@ def preprocess_text(text: str) -> str:
     clean_tokens = [word for word in tokens if word.isalnum() and word not in STOP_WORDS_PT]
     return " ".join(clean_tokens)
 
-# --- Rotas ---
 @app.get("/", summary="Verificação de status", tags=["Geral"])
 def read_root():
     return {"status": "ok", "message": "O backend de análise de e-mail está funcionando!"}
@@ -113,14 +110,10 @@ async def analyze_email_document(
                 HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_NONE
             }
         )
-
-        # Debug: imprime a resposta bruta do Gemini nos logs do Railway
-        print("Resposta bruta da IA:", response.text)
-
+        
         try:
             ia_result = json.loads(response.text)
         except json.JSONDecodeError as e:
-            print(f"ERRO AO DECODIFICAR JSON: {str(e)} - Resposta bruta: {response.text}")
             return {"status": "erro", "message": "Resposta da IA em formato inválido"}
 
         return {
