@@ -30,7 +30,7 @@ genai.configure(api_key=gemini_key)
 GEMINI_MODEL = "gemini-pro-latest"
 
 def setup_nltk():
-    resources = ['stopwords', 'punkt']
+    resources = ['stopwords', 'punkt', 'punkt_tab']  # Adicionado 'punkt_tab'
     for resource in resources:
         try:
             nltk.data.find(f'corpora/{resource}' if resource == 'stopwords' else f'tokenizers/{resource}')
