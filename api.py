@@ -42,7 +42,11 @@ STOP_WORDS_PT = set(stopwords.words('portuguese'))
 def preprocess_text(text: str) -> str:
     if not text: return ""
     text = text.lower().strip()
-    tokens = word_tokenize(text, language='portuguese')
+    try:
+        tokens = word_tokenize(text, language='portuguese')
+    except LookupError:
+        nltk.download('punkt_tab', quiet=True)  # Força o download se faltar
+        tokens = word_tokenize(text, language='portuguese')
     clean_tokens = [word for word in tokens if word.isalnum() and word not in STOP_WORDS_PT]
     return " ".join(clean_tokens)
 
