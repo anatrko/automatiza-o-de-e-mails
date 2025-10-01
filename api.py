@@ -8,11 +8,13 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 import google.generativeai as genai
 from google.generativeai.types import HarmCategory, HarmBlockThreshold
+from fastapi.staticfiles import StaticFiles
 
 # A biblioteca Pillow não é mais necessária
 # from PIL import Image 
 # A biblioteca io não é mais necessária
 # import io 
+app.mount("/", StaticFiles(directory=".", html=True), name="static")
 
 load_dotenv()
 gemini_key = os.getenv("GEMINI_API_KEY")
