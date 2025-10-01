@@ -45,6 +45,18 @@ def preprocess_text(text: str) -> str:
     clean_tokens = [word for word in tokens if word.isalnum() and word not in STOP_WORDS_PT]
     return " ".join(clean_tokens)
 
+# Adiciona o middleware de CORS para permitir requisições do frontend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "https://automatiza-o-de-e-mails.vercel.app",  # URL exata do frontend na Vercel
+        "*"  # Temporário para testes; remova em produção por segurança
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],  # Permite GET, POST, etc.
+    allow_headers=["*"],  # Permite todos os headers
+)
+
 app = FastAPI(title="Análise de E-mail com Gemini API")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
 
@@ -95,11 +107,15 @@ async def analyze_email_document(
         response = model.generate_content(
             prompt, # Enviando apenas o prompt de texto
             generation_config=genai.types.GenerationConfig(response_mime_type="application/json", temperature=0.0),
-            safety_settings={ HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_NONE, HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_NONE, HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_NONE, HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_NONE }
+            safety_settings={ HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_NONE, 
+                             HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_NONE, 
+                             HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_NONE, 
+                             HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_NONE }
         )
         
         ia_result = json.loads(response.text)
-        return {"status": "sucesso", "classificacao": ia_result.get("classificacao", "Improdutivo"), "resposta_sugerida": ia_result.get("resposta_sugerida", "Não foi possível gerar uma resposta.")}
+        return {"status": "sucesso", "classificacao": ia_result.get("classificacao", "Improdutivo"), 
+                "resposta_sugerida": ia_result.get("resposta_sugerida", "Não foi possível gerar uma resposta.")}
     except Exception as e:
         print(f"ERRO GENÉRICO NO BACKEND: {type(e).__name__} - {e}")
         raise HTTPException(status_code=500, detail=f"Erro interno do servidor: {e}")
