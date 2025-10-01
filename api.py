@@ -45,7 +45,9 @@ def preprocess_text(text: str) -> str:
     clean_tokens = [word for word in tokens if word.isalnum() and word not in STOP_WORDS_PT]
     return " ".join(clean_tokens)
 
-# Adiciona o middleware de CORS para permitir requisições do frontend
+app = FastAPI(title="Análise de E-mail com Gemini API")
+
+# Adiciona o middleware de CORS na última definição de app
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -57,8 +59,8 @@ app.add_middleware(
     allow_headers=["*"],  # Permite todos os headers
 )
 
-app = FastAPI(title="Análise de E-mail com Gemini API")
-app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
+# Remove a instância redundante de CORSMiddleware que estava aqui
+# app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
 
 @app.get("/", summary="Verificação de status", tags=["Geral"])
 def read_root():
