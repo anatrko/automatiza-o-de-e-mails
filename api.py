@@ -14,16 +14,13 @@ from fastapi.staticfiles import StaticFiles
 # --- Inicialização do app ---
 app = FastAPI(title="Análise de E-mail com Gemini API")
 
-# Monta arquivos estáticos (frontend)
-app.mount("/", StaticFiles(directory=".", html=True), name="static")
+# Monta arquivos estáticos em /static (evita conflito com rotas da API)
+app.mount("/static", StaticFiles(directory=".", html=True), name="static")
 
-# Configuração de CORS
+# Configuração de CORS (somente o domínio do Vercel)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://automatiza-o-de-e-mails.vercel.app",  # frontend no Vercel
-        "*"  # liberar geral (remova em produção)
-    ],
+    allow_origins=["https://automatiza-o-de-e-mails.vercel.app"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
