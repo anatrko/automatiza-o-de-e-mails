@@ -46,10 +46,8 @@ def preprocess_text(text: str) -> str:
     clean_tokens = [word for word in tokens if word.isalnum() and word not in STOP_WORDS_PT]
     return " ".join(clean_tokens)
 
-# Redefine app com o título
+# Redefine app com o título e aplica o CORS imediatamente
 app = FastAPI(title="Análise de E-mail com Gemini API")
-
-# Aplica o CORSMiddleware após a última definição de app
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -127,4 +125,5 @@ async def analyze_email_document(
         return {"status": "sucesso", "classificacao": ia_result.get("classificacao", "Improdutivo"), 
                 "resposta_sugerida": ia_result.get("resposta_sugerida", "Não foi possível gerar uma resposta.")}
     except Exception as e:
-        print(f"ERRO GENÉRICO NO BACKEND: {type(e).__name__} - {str(e)} - Traceback: {''.join(traceback
+        print(f"ERRO GENÉRICO NO BACKEND: {type(e).__name__} - {str(e)} - Traceback: {''.join(traceback.format_exception(type(e), e, e.__traceback__))}")
+        raise HTTPException(status_code=500, detail=f"Erro interno do servidor: {str(e)}")
