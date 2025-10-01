@@ -14,6 +14,7 @@ from fastapi.staticfiles import StaticFiles
 # from PIL import Image 
 # A biblioteca io não é mais necessária
 # import io 
+app = FastAPI()
 app.mount("/", StaticFiles(directory=".", html=True), name="static")
 
 load_dotenv()
