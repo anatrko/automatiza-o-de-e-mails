@@ -36,7 +36,7 @@ document.addEventListener('alpine:init', () => {
             }
 
             try {
-                const response = await fetch('https://automatiza-o-de-e-mails-production.up.railway.app/analyze/', {
+                const response = await fetch('https://automatiza-o-de-e-mails-production.up.railway.app/analyze', {
                     method: 'POST', body: formData,
                 });
 
