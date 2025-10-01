@@ -30,12 +30,17 @@ genai.configure(api_key=gemini_key)
 GEMINI_MODEL = "gemini-pro-latest"
 
 def setup_nltk():
+    # Define um diretório persistente para os dados do NLTK
+    nltk_data_dir = "/app/nltk_data"
+    os.makedirs(nltk_data_dir, exist_ok=True)
+    nltk.data.path.append(nltk_data_dir)
+    
     resources = ['stopwords', 'punkt', 'punkt_tab']  # Inclui punkt_tab
     for resource in resources:
         try:
             nltk.data.find(f'corpora/{resource}' if resource == 'stopwords' else f'tokenizers/{resource}')
         except LookupError:
-            nltk.download(resource, quiet=True)
+            nltk.download(resource, download_dir=nltk_data_dir, quiet=True)
 setup_nltk()
 STOP_WORDS_PT = set(stopwords.words('portuguese'))
 
@@ -45,7 +50,7 @@ def preprocess_text(text: str) -> str:
     try:
         tokens = word_tokenize(text, language='portuguese')
     except LookupError:
-        nltk.download('punkt_tab', quiet=True)  # Força o download se faltar
+        nltk.download('punkt_tab', quiet=True)  # Tentativa de fallback
         tokens = word_tokenize(text, language='portuguese')
     clean_tokens = [word for word in tokens if word.isalnum() and word not in STOP_WORDS_PT]
     return " ".join(clean_tokens)
