@@ -41,18 +41,16 @@ document.addEventListener('alpine:init', () => {
         });
 
         if (!response.ok) {
-          // tenta ler JSON, mas se não tiver corpo, não quebra
           let errorData = {};
           try {
             errorData = await response.json();
           } catch (_) {
             // sem corpo JSON
           }
-          const msg = errorData?.detail || `Erro ${response.status}: Deu ruim no servidor. Tenta de novo.`;
+          const msg = errorData?.detail || `Erro ${response.status}: Deu ruim no servidor.`;
           throw new Error(msg);
         }
 
-        // mesma proteção para corpo vazio
         let data = {};
         try {
           data = await response.json();
@@ -83,9 +81,7 @@ document.addEventListener('alpine:init', () => {
     },
 
     copySuggestion() {
-      if (!this.result || !this.result.suggestion) {
-        return;
-      }
+      if (!this.result || !this.result.suggestion) return;
       navigator.clipboard.writeText(this.result.suggestion).then(() => {
         this.copyButtonText = 'Copiado!';
         setTimeout(() => {
@@ -114,9 +110,7 @@ document.addEventListener('alpine:init', () => {
 
     typeWriterEffect(text) {
       const suggestionEl = document.getElementById('suggestion-text');
-      if (!text || !suggestionEl) {
-        return;
-      }
+      if (!text || !suggestionEl) return;
 
       clearInterval(this.typingInterval);
       suggestionEl.innerHTML = '';

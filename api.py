@@ -114,6 +114,9 @@ async def analyze_email_document(
             }
         )
 
+        # Debug: imprime a resposta bruta do Gemini nos logs do Railway
+        print("Resposta bruta da IA:", response.text)
+
         try:
             ia_result = json.loads(response.text)
         except json.JSONDecodeError as e:
