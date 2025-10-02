@@ -27,8 +27,6 @@ if not gemini_key:
 genai.configure(api_key=gemini_key)
 GEMINI_MODEL = "gemini-pro-latest"
 
-# --- A LÓGICA DO NLTK FOI COMPLETAMENTE REMOVIDA ---
-
 # --- Rotas ---
 @app.get("/", summary="Verificação de status", tags=["Geral"])
 def read_root():
@@ -59,7 +57,8 @@ async def analyze_email_document(
 
     try:
         system_instruction = "Você é um assistente de triagem de e-mails..."
-        model = genai.GenerModel(GEMINI_MODEL, system_instruction=system_instruction)
+
+        model = genai.GenerativeModel(GEMINI_MODEL, system_instruction=system_instruction)
 
         prompt = f"""
         Analise o conteúdo do e-mail abaixo e classifique-o estritamente como 'Produtivo' ou 'Improdutivo'.
