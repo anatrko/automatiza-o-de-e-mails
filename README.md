@@ -11,7 +11,6 @@ Aplicação web que utiliza a API do Google Gemini para classificar o conteúdo 
     * FastAPI
     * Uvicorn
     * Google Generative AI (Gemini)
-    * NLTK
 
 * **Frontend:**
     * HTML

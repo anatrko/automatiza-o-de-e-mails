@@ -1,12 +1,9 @@
 import os
 import json
-import nltk
 import traceback
 from dotenv import load_dotenv
 from fastapi import FastAPI, Form, File, UploadFile, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from nltk.corpus import stopwords
-from nltk.tokenize import word_tokenize
 import google.generativeai as genai
 from google.generativeai.types import HarmCategory, HarmBlockThreshold
 
@@ -30,23 +27,13 @@ if not gemini_key:
 genai.configure(api_key=gemini_key)
 GEMINI_MODEL = "gemini-pro-latest"
 
-# --- Configuração do NLTK (Simplificada) ---
-# Apenas carregamos os dados, pois eles já foram descarregados no Dockerfile
-STOP_WORDS_PT = set(stopwords.words('portuguese'))
-
-def preprocess_text(text: str) -> str:
-    if not text: return ""
-    text = text.lower().strip()
-    tokens = word_tokenize(text, language='portuguese')
-    clean_tokens = [word for word in tokens if word.isalnum() and word not in STOP_WORDS_PT]
-    return " ".join(clean_tokens)
+# --- A LÓGICA DO NLTK FOI COMPLETAMENTE REMOVIDA ---
 
 # --- Rotas ---
 @app.get("/", summary="Verificação de status", tags=["Geral"])
 def read_root():
     return {"status": "ok", "message": "O backend está a funcionar!"}
 
-# ... (o resto do seu código de rota @app.post("/analyze") continua exatamente igual) ...
 @app.post("/analyze", summary="Analisa email ou documento", tags=["Análise de Email"])
 async def analyze_email_document(
     texto: str = Form(None, description="Conteúdo do email digitado diretamente."),
@@ -56,7 +43,6 @@ async def analyze_email_document(
     if texto and texto.strip():
         email_content = texto
     elif arquivo:
-        # ... (código de leitura de ficheiro) ...
         if arquivo.content_type != "text/plain":
             raise HTTPException(status_code=400, detail="Formato de arquivo não suportado. Use apenas .txt.")
         try:
@@ -68,21 +54,19 @@ async def analyze_email_document(
     if not email_content.strip():
         raise HTTPException(status_code=400, detail="É necessário fornecer texto válido ou um arquivo com conteúdo.")
 
-    processed_content = preprocess_text(email_content)
-    if not processed_content:
-        raise HTTPException(status_code=400, detail="O texto fornecido não contém conteúdo analisável.")
+    # Apenas uma limpeza básica, sem NLTK
+    content_for_ia = email_content.lower().strip()
 
     try:
-        # ... (código de chamada ao Gemini) ...
         system_instruction = "Você é um assistente de triagem de e-mails..."
-        model = genai.GenerativeModel(GEMINI_MODEL, system_instruction=system_instruction)
+        model = genai.GenerModel(GEMINI_MODEL, system_instruction=system_instruction)
 
         prompt = f"""
         Analise o conteúdo do e-mail abaixo e classifique-o estritamente como 'Produtivo' ou 'Improdutivo'.
         Gere também uma resposta sugerida apropriada.
         **Formato de Saída Obrigatório:** JSON com "classificacao" e "resposta_sugerida".
         ---
-        {processed_content}
+        {content_for_ia}
         ---
         """
 
