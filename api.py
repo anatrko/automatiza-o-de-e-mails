@@ -9,15 +9,13 @@ from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 import google.generativeai as genai
 from google.generativeai.types import HarmCategory, HarmBlockThreshold
-from fastapi.staticfiles import StaticFiles
 
 # --- Inicialização do app ---
 app = FastAPI(title="Análise de E-mail com Gemini API")
 
-# <<< MUDANÇA AQUI: Trocando para uma configuração de CORS mais permissiva para produção >>>
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # O "*" permite que qualquer site (incluindo o seu na Vercel) aceda à API
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -27,42 +25,28 @@ app.add_middleware(
 load_dotenv()
 gemini_key = os.getenv("GEMINI_API_KEY")
 if not gemini_key:
-    raise ValueError("A chave GEMINI_API_KEY não foi encontrada no ambiente ou no arquivo .env.")
+    raise ValueError("A chave GEMINI_API_KEY não foi encontrada.")
 
 genai.configure(api_key=gemini_key)
 GEMINI_MODEL = "gemini-pro-latest"
 
-# --- Configuração do NLTK ---
-# ... (o resto do seu código continua exatamente igual) ...
-def setup_nltk():
-    nltk_data_dir = "/app/nltk_data"
-    os.makedirs(nltk_data_dir, exist_ok=True)
-    nltk.data.path.append(nltk_data_dir)
-    resources = ['stopwords', 'punkt', 'punkt_tab']
-    for resource in resources:
-        try:
-            nltk.data.find(f'corpora/{resource}' if resource == 'stopwords' else f'tokenizers/{resource}')
-        except LookupError:
-            nltk.download(resource, download_dir=nltk_data_dir, quiet=True)
-
-setup_nltk()
+# --- Configuração do NLTK (Simplificada) ---
+# Apenas carregamos os dados, pois eles já foram descarregados no Dockerfile
 STOP_WORDS_PT = set(stopwords.words('portuguese'))
 
 def preprocess_text(text: str) -> str:
     if not text: return ""
     text = text.lower().strip()
-    try:
-        tokens = word_tokenize(text, language='portuguese')
-    except LookupError:
-        nltk.download('punkt_tab', quiet=True)
-        tokens = word_tokenize(text, language='portuguese')
+    tokens = word_tokenize(text, language='portuguese')
     clean_tokens = [word for word in tokens if word.isalnum() and word not in STOP_WORDS_PT]
     return " ".join(clean_tokens)
 
+# --- Rotas ---
 @app.get("/", summary="Verificação de status", tags=["Geral"])
 def read_root():
-    return {"status": "ok", "message": "O backend de análise de e-mail está funcionando!"}
+    return {"status": "ok", "message": "O backend está a funcionar!"}
 
+# ... (o resto do seu código de rota @app.post("/analyze") continua exatamente igual) ...
 @app.post("/analyze", summary="Analisa email ou documento", tags=["Análise de Email"])
 async def analyze_email_document(
     texto: str = Form(None, description="Conteúdo do email digitado diretamente."),
@@ -70,8 +54,9 @@ async def analyze_email_document(
 ):
     email_content = ""
     if texto and texto.strip():
-        email_content = texto.strip()
+        email_content = texto
     elif arquivo:
+        # ... (código de leitura de ficheiro) ...
         if arquivo.content_type != "text/plain":
             raise HTTPException(status_code=400, detail="Formato de arquivo não suportado. Use apenas .txt.")
         try:
@@ -88,6 +73,7 @@ async def analyze_email_document(
         raise HTTPException(status_code=400, detail="O texto fornecido não contém conteúdo analisável.")
 
     try:
+        # ... (código de chamada ao Gemini) ...
         system_instruction = "Você é um assistente de triagem de e-mails..."
         model = genai.GenerativeModel(GEMINI_MODEL, system_instruction=system_instruction)
 
@@ -102,7 +88,7 @@ async def analyze_email_document(
 
         response = model.generate_content(
             prompt,
-            generation_config=genai.types.GenerationConfig(response_mime_type="application/json", temperature=0.0),
+            generation_config=genai.types.GenerationConfig(response_mime_type="json", temperature=0.0),
             safety_settings={
                 HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_NONE,
                 HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_NONE,
